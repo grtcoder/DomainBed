@@ -160,6 +160,42 @@ class MNIST_CNN(nn.Module):
         x = x.view(len(x), -1)
         return x
 
+class CNN1D(nn.Module):
+    def __init__(self, input_shape):
+        super(CNN1D, self).__init__()
+        # print(input_shape[0])
+        self.conv1=nn.Conv1d(input_shape[0],128,2,padding=1,dilation=2)
+        self.conv2 = nn.Conv1d(128, 128, 2,padding=1,dilation=2)
+        self.conv3 = nn.Conv1d(128, 128, 2,padding=1,dilation=2)
+        self.maxpool = nn.MaxPool1d(kernel_size = 2)
+        self.linear1=nn.Linear(128*198, 1000)
+        self.linear2 = nn.Linear(1000, 3)
+    
+    def forward(self, x):
+
+       print(x.shape)
+       x = self.conv1(x)
+       x = F.relu(x)
+
+       x = self.conv2(x)
+       x = F.relu(x)
+       print(x.shape)
+       x = self.conv3(x)
+       x = F.relu(x)
+       print(x.shape)
+       x = self.maxpool(x)
+       print(x.shape)
+       x = x.view(len(x), -1)
+       x = torch.flatten(x)
+
+       print(x)
+
+       x = self.linear1(x) 
+       x = F.relu(x)
+
+       x = self.linear2(x) 
+
+       return x
 
 class ContextNet(nn.Module):
     def __init__(self, input_shape):
